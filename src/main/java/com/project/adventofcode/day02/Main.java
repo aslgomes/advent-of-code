@@ -1,4 +1,4 @@
-package com.project.day02;
+package com.project.adventofcode.day02;
 
 import java.io.BufferedReader;
 import java.io.File;
