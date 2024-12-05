@@ -44,6 +44,7 @@ public class Main {
         partTwo();
     }
 
+    // Correct answer: 2557
     private static void partOne() throws IOException {
         grid = loadGrid();
         int totalCount = 0;
@@ -63,6 +64,7 @@ public class Main {
         System.out.println("totalCountPartOne=" + totalCount);
     }
 
+    // Correct answer: 1854
     private static void partTwo() throws IOException {
         grid = loadGrid();
         int totalCount = 0;
