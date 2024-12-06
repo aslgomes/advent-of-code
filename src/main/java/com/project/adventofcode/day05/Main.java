@@ -18,15 +18,12 @@ public class Main {
 
     private static final Map<Integer, List<Integer>> graph = new HashMap<>();
 
-    private static Comparator<Integer> customComparator;
-
     public static void main(String[] args) throws IOException {
         System.out.println("Hello Day 5");
         partOne();
         partTwo();
     }
 
-    // Correct answer: 5732
     private static void partOne() throws IOException {
         final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
         int totalSum = 0;
@@ -64,9 +61,16 @@ public class Main {
         System.out.println("totalSumPartOne=" + totalSum);
     }
 
-    // Correct answer: 4716
     private static void partTwo() throws IOException {
         final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
+
+        final Comparator<Integer> customComparator = (o1, o2) -> {
+            if (graph.containsKey(o1) && graph.get(o1).contains(o2)) {
+                return -1;
+            }
+            return 0;
+        };
+
         int totalSum = 0;
 
         boolean lineBreakSeen = false;
@@ -74,15 +78,6 @@ public class Main {
 
             if (line.isEmpty()) {
                 lineBreakSeen = true;
-
-                // Build the comparator after the graph is built
-                customComparator = (o1, o2) -> {
-                    if (graph.containsKey(o1) && graph.get(o1).contains(o2)) {
-                        return -1;
-                    }
-                    return 0;
-                };
-
                 continue;
             }
 

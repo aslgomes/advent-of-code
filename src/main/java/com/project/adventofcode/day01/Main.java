@@ -48,6 +48,7 @@ public class Main {
         System.out.println("totalDistance=" + totalDistance);
     }
 
+
     private static void partTwo() throws IOException {
         final Path filePath = new File(INPUT_FILE_PATH).toPath();
 
