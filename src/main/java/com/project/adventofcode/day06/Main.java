@@ -88,6 +88,18 @@ public class Main {
         final char[][] grid = buildGrid();
 
         int totalPositionsPartTwo = 0;
+        int guardX = -1;
+        int guardY = -1;
+
+        // Determining where are the guard's coordinates - this does not change for the given input.
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == '^') {
+                    guardX = i;
+                    guardY = j;
+                }
+            }
+        }
 
         // Assumes partOne() has ran first
         // Iterates through all guard positions, checking for loop-creating obstructions.
@@ -95,14 +107,8 @@ public class Main {
             char tmp = grid[pos[0]][pos[1]];
             grid[pos[0]][pos[1]] = 'O';
 
-            for (int i = 0; i < grid.length; i++) {
-                for (int j = 0; j < grid[0].length; j++) {
-                    if (grid[i][j] == '^') {
-                        if (hasLoop(grid, i, j, Direction.UP, new HashMap<>())) {
-                            totalPositionsPartTwo++;
-                        }
-                    }
-                }
+            if (hasLoop(grid, guardX, guardY, Direction.UP, new HashMap<>())) {
+                totalPositionsPartTwo++;
             }
 
             grid[pos[0]][pos[1]] = tmp;
