@@ -51,7 +51,7 @@ public class Main {
         System.out.println("time: " + (end2 - start2) + " (ms)");
     }
 
-    private static void partOne() throws IOException {
+    private static char[][] buildGrid() throws IOException {
         final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
 
         final int rows = lines.size();
@@ -65,8 +65,14 @@ public class Main {
             System.arraycopy(chars, 0, grid[r++], 0, chars.length);
         }
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        return grid;
+    }
+
+    private static void partOne() throws IOException {
+        final char[][] grid = buildGrid();
+
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
                 if (grid[i][j] == '^') {
                     grid[i][j] = 'X';
                     GUARD_POSITIONS.add(new int[] {i, j});
@@ -78,8 +84,34 @@ public class Main {
         System.out.println("totalPositionsPartOne=" + GUARD_POSITIONS.size());
     }
 
-    private static void move(final char[][] grid, final int x, final int y, final Direction direction) {
+    private static void partTwo() throws IOException {
+        final char[][] grid = buildGrid();
 
+        int totalPositionsPartTwo = 0;
+
+        // Assumes partOne() has ran first
+        // Iterates through all guard positions, checking for loop-creating obstructions.
+        for(int[] pos: GUARD_POSITIONS) {
+            char tmp = grid[pos[0]][pos[1]];
+            grid[pos[0]][pos[1]] = 'O';
+
+            for (int i = 0; i < grid.length; i++) {
+                for (int j = 0; j < grid[0].length; j++) {
+                    if (grid[i][j] == '^') {
+                        if (hasLoop(grid, i, j, Direction.UP, new HashMap<>())) {
+                            totalPositionsPartTwo++;
+                        }
+                    }
+                }
+            }
+
+            grid[pos[0]][pos[1]] = tmp;
+        }
+
+        System.out.println("totalPositionsPartTwo=" + totalPositionsPartTwo);
+    }
+
+    private static void move(final char[][] grid, final int x, final int y, final Direction direction) {
         final int newX = x + nextCoordinateByDirection.get(direction)[0];
         final int newY = y + nextCoordinateByDirection.get(direction)[1];
 
@@ -98,41 +130,6 @@ public class Main {
                 move(grid, newX, newY, direction);
             }
         }
-    }
-
-    private static void partTwo() throws IOException {
-        final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
-        int totalPositionsPartTwo = 0;
-
-        final int rows = lines.size();
-        final int cols = lines.getFirst().length();
-
-        final char[][] grid = new char[rows][cols];
-
-        int r = 0;
-        for (String line: lines) {
-            char[] chars = line.toCharArray();
-            System.arraycopy(chars, 0, grid[r++], 0, chars.length);
-        }
-
-        for(int[] pos: GUARD_POSITIONS) { // Assumes partOne() has ran first
-            char tmp = grid[pos[0]][pos[1]];
-            grid[pos[0]][pos[1]] = 'O';
-
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    if (grid[i][j] == '^') {
-                        if (hasLoop(grid, i, j, Direction.UP, new HashMap<>())) {
-                            totalPositionsPartTwo++;
-                        }
-                    }
-                }
-            }
-
-            grid[pos[0]][pos[1]] = tmp;
-        }
-
-        System.out.println("totalPositionsPartTwo=" + totalPositionsPartTwo);
     }
 
     private static boolean hasLoop(
