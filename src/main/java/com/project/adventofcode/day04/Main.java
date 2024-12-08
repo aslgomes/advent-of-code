@@ -1,8 +1,8 @@
 package com.project.adventofcode.day04;
 
+import com.project.adventofcode.Common;
+
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 public class Main {
@@ -45,7 +45,7 @@ public class Main {
     }
 
     private static void partOne() throws IOException {
-        grid = loadGrid();
+        grid = Common.loadGrid(INPUT_FILE_PATH);
         int totalCount = 0;
 
         for (int i = 0; i < grid.length; i++) {
@@ -64,7 +64,7 @@ public class Main {
     }
 
     private static void partTwo() throws IOException {
-        grid = loadGrid();
+        grid = Common.loadGrid(INPUT_FILE_PATH);
         int totalCount = 0;
 
         for (int i = 0; i < grid.length; i++) {
@@ -93,26 +93,13 @@ public class Main {
         System.out.println("totalCountPartTwo=" + totalCount);
     }
 
-    private static char[][] loadGrid() throws IOException {
-        final List<String> lines = Files.readAllLines(Path.of(Main.INPUT_FILE_PATH));
-        final int rows = lines.size();
-        final int cols = lines.getFirst().length();
-
-        grid = new char[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            grid[i] = lines.get(i).toCharArray();
-        }
-
-        return grid;
-    }
-
     private static boolean dfs(
             final Coordinates c,
             final String targetWord,
             final int currentIndex,
             final Direction direction) {
 
-        if (!isInBounds(c) || grid[c.x()][c.y()] != targetWord.charAt(currentIndex)) {
+        if (!Common.withinBounds(grid, c.x(), c.y()) || grid[c.x()][c.y()] != targetWord.charAt(currentIndex)) {
             return false;
         }
 
@@ -122,10 +109,6 @@ public class Main {
 
         final Coordinates next = direction.move(c);
         return dfs(next, targetWord, currentIndex + 1, direction);
-    }
-
-    private static boolean isInBounds(final Coordinates c) {
-        return c.x() >= 0 && c.x() < grid.length && c.y() >= 0 && c.y() < grid[0].length;
     }
 
     private record Coordinates(int x, int y) {}

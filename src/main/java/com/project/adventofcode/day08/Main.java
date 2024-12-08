@@ -1,8 +1,8 @@
 package com.project.adventofcode.day08;
 
+import com.project.adventofcode.Common;
+
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,7 +35,7 @@ public class Main {
     private static void partOne() throws IOException {
         final Map<Character, List<Coordinates>> LOCATIONS = new HashMap<>();
         final Set<Integer> antinodes = new HashSet<>();
-        final char[][] grid = loadGrid();
+        final char[][] grid = Common.loadGrid(INPUT_FILE_PATH);
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
@@ -60,7 +60,7 @@ public class Main {
                         final int newX = curr.x() - diffX;
                         final int newY = curr.y() - diffY;
 
-                        if (withinBounds(grid, newX, newY)) {
+                        if (Common.withinBounds(grid, newX, newY)) {
                             // From 2D -> 1D coordinates
                             final Integer index = newX * grid[0].length + newY;
                             antinodes.add(index);
@@ -76,7 +76,7 @@ public class Main {
     private static void partTwo() throws IOException {
         final Map<Character, List<Coordinates>> LOCATIONS = new HashMap<>();
         final Set<Integer> antinodes = new HashSet<>();
-        final char[][] grid = loadGrid();
+        final char[][] grid = Common.loadGrid(INPUT_FILE_PATH);
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
@@ -103,7 +103,7 @@ public class Main {
                         int newX = fixed.x() - diffX;
                         int newY = fixed.y() - diffY;
 
-                        while (withinBounds(grid, newX, newY)) {
+                        while (Common.withinBounds(grid, newX, newY)) {
                             // From 2D -> 1D coordinates
                             final Integer index = newX * grid[0].length + newY;
                             antinodes.add(index);
@@ -116,7 +116,7 @@ public class Main {
                         int otherNewX = fixed.x() + diffX;
                         int otherNewY = fixed.y() + diffY;
 
-                        while (withinBounds(grid, otherNewX, otherNewY)) {
+                        while (Common.withinBounds(grid, otherNewX, otherNewY)) {
                             // From 2D -> 1D coordinates
                             final Integer index = otherNewX * grid[0].length + otherNewY;
                             antinodes.add(index);
@@ -130,31 +130,5 @@ public class Main {
         }
 
         System.out.println("totalLocationsPartTwo=" + antinodes.size());
-    }
-
-    private static char[][] loadGrid() throws IOException {
-        final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
-        final int rows = lines.size();
-        final int cols = lines.getFirst().length();
-
-        char[][] grid = new char[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            grid[i] = lines.get(i).toCharArray();
-        }
-
-        return grid;
-    }
-
-    private static boolean withinBounds(final char[][] grid, final int x, final int y) {
-        return x >= 0 && x < grid.length && y >= 0 && y < grid[0].length;
-    }
-
-    private static void printGrid(final char[][] grid) {
-        for (char[] chars : grid) {
-            for (int j = 0; j < grid[0].length; j++) {
-                System.out.print(chars[j]);
-            }
-            System.out.println();
-        }
     }
 }

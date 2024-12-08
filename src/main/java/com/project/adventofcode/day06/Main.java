@@ -1,8 +1,8 @@
 package com.project.adventofcode.day06;
 
+import com.project.adventofcode.Common;
+
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,25 +51,8 @@ public class Main {
         System.out.println("time: " + (end2 - start2) + " (ms)");
     }
 
-    private static char[][] buildGrid() throws IOException {
-        final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
-
-        final int rows = lines.size();
-        final int cols = lines.getFirst().length();
-
-        final char[][] grid = new char[rows][cols];
-
-        int r = 0;
-        for (String line: lines) {
-            char[] chars = line.toCharArray();
-            System.arraycopy(chars, 0, grid[r++], 0, chars.length);
-        }
-
-        return grid;
-    }
-
     private static void partOne() throws IOException {
-        final char[][] grid = buildGrid();
+        final char[][] grid = Common.loadGrid(INPUT_FILE_PATH);
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
@@ -85,7 +68,7 @@ public class Main {
     }
 
     private static void partTwo() throws IOException {
-        final char[][] grid = buildGrid();
+        final char[][] grid = Common.loadGrid(INPUT_FILE_PATH);
 
         int totalPositionsPartTwo = 0;
         int guardX = -1;
@@ -121,7 +104,7 @@ public class Main {
         final int newX = x + nextCoordinateByDirection.get(direction)[0];
         final int newY = y + nextCoordinateByDirection.get(direction)[1];
 
-        if (withinBounds(grid, newX, newY)) {
+        if (Common.withinBounds(grid, newX, newY)) {
             if (grid[newX][newY] == '#') {
                 // If obstacle, change direction
                 move(grid, x, y, rotate.get(direction));
@@ -148,7 +131,7 @@ public class Main {
         final int newX = x + nextCoordinateByDirection.get(direction)[0];
         final int newY = y + nextCoordinateByDirection.get(direction)[1];
 
-        if (withinBounds(grid, newX, newY)) {
+        if (Common.withinBounds(grid, newX, newY)) {
             if (grid[newX][newY] == '#' || grid[newX][newY] == 'O') {
                 // If obstacle, change direction
                 return hasLoop(grid, x, y, rotate.get(direction), seen);
@@ -167,9 +150,5 @@ public class Main {
         }
 
         return false;
-    }
-
-    private static boolean withinBounds(final char[][] grid, final int x, final int y) {
-        return x >= 0 && x < grid.length && y >= 0 && y < grid[0].length;
     }
 }
