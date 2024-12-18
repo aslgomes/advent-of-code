@@ -35,7 +35,7 @@ public class Main {
     private static void partOne() throws IOException {
         final Map<Character, List<Coordinates>> LOCATIONS = new HashMap<>();
         final Set<Integer> antinodes = new HashSet<>();
-        final char[][] grid = Common.loadGrid(INPUT_FILE_PATH);
+        final char[][] grid = Common.loadCharGrid(INPUT_FILE_PATH);
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
@@ -76,7 +76,7 @@ public class Main {
     private static void partTwo() throws IOException {
         final Map<Character, List<Coordinates>> LOCATIONS = new HashMap<>();
         final Set<Integer> antinodes = new HashSet<>();
-        final char[][] grid = Common.loadGrid(INPUT_FILE_PATH);
+        final char[][] grid = Common.loadCharGrid(INPUT_FILE_PATH);
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {

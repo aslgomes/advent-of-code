@@ -52,7 +52,7 @@ public class Main {
     }
 
     private static void partOne() throws IOException {
-        final char[][] grid = Common.loadGrid(INPUT_FILE_PATH);
+        final char[][] grid = Common.loadCharGrid(INPUT_FILE_PATH);
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
@@ -68,7 +68,7 @@ public class Main {
     }
 
     private static void partTwo() throws IOException {
-        final char[][] grid = Common.loadGrid(INPUT_FILE_PATH);
+        final char[][] grid = Common.loadCharGrid(INPUT_FILE_PATH);
 
         int totalPositionsPartTwo = 0;
         int guardX = -1;

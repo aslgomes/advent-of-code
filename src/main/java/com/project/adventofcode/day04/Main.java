@@ -55,7 +55,7 @@ public class Main {
     }
 
     private static void partOne() throws IOException {
-        grid = Common.loadGrid(INPUT_FILE_PATH);
+        grid = Common.loadCharGrid(INPUT_FILE_PATH);
         int totalCount = 0;
 
         for (int i = 0; i < grid.length; i++) {
@@ -74,7 +74,7 @@ public class Main {
     }
 
     private static void partTwo() throws IOException {
-        grid = Common.loadGrid(INPUT_FILE_PATH);
+        grid = Common.loadCharGrid(INPUT_FILE_PATH);
         int totalCount = 0;
 
         for (int i = 0; i < grid.length; i++) {
