@@ -14,6 +14,13 @@ import java.util.Set;
 
 public class Main {
 
+    // Key aspects of the solution:
+    //
+    // Part 1 - Perform a simple DFS to count each occurrence of 9 the first time a node with number 9 is visited.
+    //
+    // Part 2 - Use DFS again to explore all unique paths from any source node 0 to all target reachable 9's, allowing
+    // nodes to be revisited. Sum up the scores for these paths at the end.
+
     private static final String INPUT_FILE_PATH = "src/main/resources/day10/input.txt";
 
     private record CellPath(int x, int y, List<String> path) {}
