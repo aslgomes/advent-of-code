@@ -12,6 +12,19 @@ import java.util.Set;
 
 public class Main {
 
+    // Key aspects of the solution:
+    //
+    // Part 1 - uses recursion and memoization to determine whether a string (word) can be segmented into substrings
+    // from a set of patterns (patterns). Starting from a given index, the function checks if any pattern in patterns
+    // matches the substring of word beginning at the current index.
+    //
+    // If a match is found, it recursively checks if the rest of the string is valid starting from the next position
+    // (index + length of the matched pattern).
+    //
+    // Part 2 - the approach is similar to what has been done in Part 1 but instead of caching whether building the
+    // string from the set of patterns is possible, a total count is accumulated that represents the number of times
+    // a solution from a different recursion call stack has been found.
+
     private static final String INPUT_FILE_PATH = "src/main/resources/day19/input.txt";
 
     private static final Map<String, Boolean> validMemo = new HashMap<>();
