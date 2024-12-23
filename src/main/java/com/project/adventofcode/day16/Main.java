@@ -16,16 +16,16 @@ public class Main {
 
     // Key aspects of the solution:
     //
-    // 1 - Dijkstra's Algorithm (Part 1) - Dijkstra's algorithm is used to find the path with the lowest cost to reach
-    // the target cell 'E'.
+    // Part 1 - Dijkstra's algorithm is used to find the path with the lowest cost to reach the target cell 'E'.
     //
-    // 2 - Tracking Optimal Paths (Part 2) - Maintain a distTo and predecessors map for all nodes visited.
-    // These maps are crucial for identifying nodes that are part of one or more optimal paths, as there may be
-    // multiple paths with the same minimum cost.
+    // Part 2 - Tracking Optimal Paths.
     //
-    // 3 - Depth-First Search (DFS) for Path Identification - Starting from the target node 'E', perform a DFS in
-    // reverse (backwards traversal) to explore all optimal paths. Identify the unique cells that lie on any of
-    // these optimal paths and return them as the result.
+    //  - Maintain a distTo and predecessors map for all nodes visited. These maps are crucial for identifying nodes
+    //  that are part of one or more optimal paths, as there may be multiple paths with the same minimum cost.
+    //
+    //  - Depth-First Search (DFS) for Path Identification - Starting from the target node 'E', a DFS is done in
+    // reverse (backwards traversal) to explore all optimal paths. All unique cells that lie on any of
+    // these optimal paths are identified and returned as the result.
 
     // Directions
     //
