@@ -1,11 +1,9 @@
 package com.project.adventofcode.day02;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public class Main {
 
@@ -28,16 +26,13 @@ public class Main {
     }
 
     private static void partOne() throws IOException {
-        final Path filePath = new File(INPUT_FILE_PATH).toPath();
-        int totalSafe = 0;
+        final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(Files.newInputStream(filePath)))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                final String[] levels = line.split("\\s+");
-                if (isSafe(levels) == -1) {
-                    totalSafe++;
-                }
+        int totalSafe = 0;
+        for (String line : lines) {
+            final String[] levels = line.split("\\s+");
+            if (isSafe(levels) == -1) {
+                totalSafe++;
             }
         }
 
@@ -45,38 +40,34 @@ public class Main {
     }
 
     private static void partTwo() throws IOException {
-        final Path filePath = new File(INPUT_FILE_PATH).toPath();
+        final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
+
         int totalSafe = 0;
+        for (String line : lines) {
+            final String[] levels = line.split("\\s+");
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(Files.newInputStream(filePath)))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                final String[] levels = line.split("\\s+");
+            if (isSafe(levels) == -1) {
+                totalSafe++;
 
-                if (isSafe(levels) == -1) {
-                    totalSafe++;
+            } else {
 
-                } else {
-
-                    //
-                    // Why do we need to iterate over the whole list?
-                    //
-                    // Given the example: 1 4 3 2 1
-                    //
-                    // Identifying the exact number to remove can be challenging, as local relationships between numbers
-                    // might seem valid initially. For instance, the pair 1-4 appears to be increasing and within the
-                    // allowed difference. However, the subsequent numbers reveal that removing 1 is necessary to make
-                    // the entire sequence safe.
-                    //
-                    // Given this complexity, a brute-force approach of checking all possible removals is a practical
-                    // solution. As soon as we find a removal that results in a safe sequence, we can confidently
-                    // conclude that the original sequence is also safe after removing that element.
-                    //
-                    for (int i = 0; i < levels.length; i++) {
-                        if (isSafe(levels, i) == -1) {
-                            totalSafe++;
-                            break;
-                        }
+                // Why do we need to iterate over the whole list?
+                //
+                // Given the example: 1 4 3 2 1
+                //
+                // Identifying the exact number to remove can be challenging, as local relationships between numbers
+                // might seem valid initially. For instance, the pair 1-4 appears to be increasing and within the
+                // allowed difference. However, the subsequent numbers reveal that removing 1 is necessary to make
+                // the entire sequence safe.
+                //
+                // Given this complexity, a brute-force approach of checking all possible removals is a practical
+                // solution. As soon as we find a removal that results in a safe sequence, we can confidently
+                // conclude that the original sequence is also safe after removing that element.
+                //
+                for (int i = 0; i < levels.length; i++) {
+                    if (isSafe(levels, i) == -1) {
+                        totalSafe++;
+                        break;
                     }
                 }
             }
@@ -86,9 +77,9 @@ public class Main {
     }
 
     //
-    // A negative 'skipIndex' input parameter will ensure no element from 'levels' is skipped
-    // A return value of -1 means this set of values are deemed safe in the context of the problem statement
-    // A return value different from -1 represents the index at which the first violation was seen
+    // - A negative 'skipIndex' input parameter will ensure no element from 'levels' is skipped
+    // - A return value of -1 means this set of values are deemed safe in the context of the problem statement
+    // - A return value different from -1 represents the index at which the first violation was seen
     //
     private static int isSafe(final String[] levels) {
         return isSafe(levels, -1);

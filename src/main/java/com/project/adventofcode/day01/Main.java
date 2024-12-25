@@ -1,9 +1,6 @@
 package com.project.adventofcode.day01;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -33,18 +30,15 @@ public class Main {
     }
 
     private static void partOne() throws IOException {
-        final Path filePath = new File(INPUT_FILE_PATH).toPath();
+        final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
 
         final List<Integer> list1 = new ArrayList<>();
         final List<Integer> list2 = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(Files.newInputStream(filePath)))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                final String[] numbers = line.split("\\s+");
-                list1.add(Integer.parseInt(numbers[0]));
-                list2.add(Integer.parseInt(numbers[1]));
-            }
+        for (String line : lines) {
+            final String[] numbers = line.split("\\s+");
+            list1.add(Integer.parseInt(numbers[0]));
+            list2.add(Integer.parseInt(numbers[1]));
         }
 
         Collections.sort(list1);
@@ -58,27 +52,23 @@ public class Main {
         System.out.println("totalDistance=" + totalDistance);
     }
 
-
     private static void partTwo() throws IOException {
-        final Path filePath = new File(INPUT_FILE_PATH).toPath();
+        final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
 
         final List<Integer> list = new ArrayList<>();
         final Map<Integer, Integer> map = new HashMap<>();
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(Files.newInputStream(filePath)))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                final String[] numbers = line.split("\\s+");
-                list.add(Integer.parseInt(numbers[0]));
+        for (String line : lines) {
+            final String[] numbers = line.split("\\s+");
+            list.add(Integer.parseInt(numbers[0]));
 
-                final Integer i = Integer.parseInt(numbers[1]);
-                map.put(i, map.getOrDefault(i, 0) + 1);
-            }
+            final Integer i = Integer.parseInt(numbers[1]);
+            map.put(i, map.getOrDefault(i, 0) + 1);
         }
 
         int similarity = 0;
-        for (int i = 0; i < list.size(); i++) {
-            similarity += list.get(i) * map.getOrDefault(list.get(i), 0);
+        for (Integer integer : list) {
+            similarity += integer * map.getOrDefault(integer, 0);
         }
 
         System.out.println("similarity=" + similarity);
