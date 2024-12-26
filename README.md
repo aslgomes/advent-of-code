@@ -1,10 +1,10 @@
-# Advent of Code 2024 Solutions (Java)
+# Advent of Code Solutions (Java)
 
 This repository contains my Java solutions to the annual Advent of Code programming challenges.
 
 Link - https://adventofcode.com/
 
-**Table of Solutions**
+**Table of Solutions - 2024**
 
 | Day | Part 1         | Part 2                                 |
 |-----|----------------|----------------------------------------|
