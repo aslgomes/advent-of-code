@@ -8,6 +8,24 @@ import java.util.Map;
 
 public class Main {
 
+    // Key aspects of the solution:
+    //
+    // Part 1 - Brute force. An explicit Linked List is built to represent the set of stones. Each stone is processed
+    // individually. The list is looped 25 times and changes (additions or updates to the list) are done in place. This
+    // approach works in a 25x loop, but it won't work for the requirements of Part 2.
+    //
+    // Part 2 - Memoization to the rescue! In order to scale the solution, a Map stoneNumber -> frequency is maintained
+    // throughout the cycles (a.k.a. blinks). Frequencies of stones are transposed to the next iteration.
+    //
+    // Example:
+    //
+    // Iteration N    : stoneNumber (0)    -> frequency (50)
+    //                  stoneNumber (2024) -> frequency (10)
+    //
+    // Iteration N + 1: stoneNumber (1)    -> frequency (50)
+    //                  stoneNumber (20)   -> frequency (10)
+    //                  stoneNumber (24)   -> frequency (10)
+
     private static final String INPUT_FILE_PATH = "src/main/resources/year2024/day11/input.txt";
 
     private static final int NUMBER_OF_BLINKS_PART_ONE = 25;
