@@ -134,7 +134,7 @@ public class Main {
             frequencies = localFrequencies;
         }
 
-        long numberOfStones = frequencies.values().stream().mapToLong(Long::longValue).sum();
+        final long numberOfStones = frequencies.values().stream().mapToLong(Long::longValue).sum();
         System.out.println("numberOfStones=" + numberOfStones);
     }
 
