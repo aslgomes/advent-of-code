@@ -32,7 +32,7 @@ public class Main {
 
     private static final Color DARK_GREEN = new Color(0, 100, 0);
 
-    private static final boolean WITH_OUTPUT_PART_ONE = false;
+    private static final boolean WITH_OUTPUT_PART_ONE = true;
 
     private static final boolean WITH_OUTPUT_PART_TWO = false;
 
@@ -99,7 +99,10 @@ public class Main {
 
                 if (WITH_OUTPUT_PART_ONE) {
                     final String fileName = String.format("output_%05d.png", fileIterator);
-                    final String fullPath = "src/main/resources/year2024/day15/output-part-one/" + fileName;
+                    final String directoryPath = "src/main/resources/year2024/day15/output-part-one/";
+                    final String fullPath = directoryPath + fileName;
+
+                    Files.createDirectories(Path.of(directoryPath));
                     System.out.println("Printing " + fullPath);
                     saveGridAsImage(grid, fullPath);
                 }
