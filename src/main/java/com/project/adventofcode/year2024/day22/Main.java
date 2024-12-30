@@ -12,8 +12,6 @@ public class Main {
 
     // Key aspects of the solution:
     //
-    // tags - #math #sliding-window
-    //
     // Part 1 - Translates the problem statement into several mathematical steps. After the 2000th cycle
     // for each buyer, the secret number gets added to a running total.
     //
