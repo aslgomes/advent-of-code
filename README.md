@@ -36,5 +36,5 @@ Link - https://adventofcode.com/
 
 ### 2024 - Day 15 Part 1
 
-* [Short Video \[60s\] \[15fps\]](assets/videos/2024_day15_01_animation-short-15fps.mp4)
-* [Full Video \[11m\] \[30fps\]](assets/videos/2024_day15_01_animation-full-30fps.mp4)
+* [Download short video \[60s\] \[15fps\] \[mp4\]](assets/videos/2024_day15_01_animation-short-15fps.mp4)
+* [Download full video \[11m\] \[30fps\] \[mp4\]](assets/videos/2024_day15_01_animation-full-30fps.mp4)
