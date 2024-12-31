@@ -189,15 +189,15 @@ public class Main {
 
     private static List<Edge> mergeEdges(
             final List<Edge> inputEdges,
-            final Function<Edge, Integer> primaryKeyExtractor,
-            final Function<Edge, Integer> secondaryKeyExtractor) {
+            final Function<Edge, Integer> firstComparator,
+            final Function<Edge, Integer> secondComparator) {
 
         final List<Edge> results = new ArrayList<>();
         final List<Edge> edges = new ArrayList<>(inputEdges);
 
         edges.sort(
-                Comparator.comparing(primaryKeyExtractor)
-                        .thenComparing(secondaryKeyExtractor));
+                Comparator.comparing(firstComparator)
+                        .thenComparing(secondComparator));
 
         results.add(edges.getFirst());
         for (int i = 1; i < edges.size(); i++) {
