@@ -32,11 +32,6 @@ public class Main {
         System.out.println("time: " + (end2 - start2) + " (ms)");
     }
 
-    private enum Direction {
-        VERTICAL,
-        HORIZONTAL
-    }
-
     private enum Side {
         TOP,
         RIGHT,
@@ -53,10 +48,10 @@ public class Main {
 
     private record EdgeKey(Corner from, Corner to) { }
 
-    private record Edge(Corner from, Corner to, Direction direction, Side side) {
+    private record Edge(Corner from, Corner to, Side side) {
         @Override
         public String toString() {
-            return "[" + from + " -> " + to + "], direction=" + direction + ", side=" + side;
+            return "[" + from + " -> " + to + "], side=" + side;
         }
     }
 
@@ -113,11 +108,11 @@ public class Main {
                             .toList();
 
                     final List<Edge> horizontalEdges = filteredEdges.stream()
-                            .filter(e -> e.direction.equals(Direction.HORIZONTAL))
+                            .filter(e -> (e.side.equals(Side.TOP) || e.side.equals(Side.BOTTOM)))
                             .toList();
 
                     final List<Edge> verticalEdges = filteredEdges.stream()
-                            .filter(e -> e.direction.equals(Direction.VERTICAL))
+                            .filter(e -> (e.side.equals(Side.RIGHT) || e.side.equals(Side.LEFT)))
                             .toList();
 
                     final List<Edge> rowsMerged = mergeRows(horizontalEdges);
@@ -154,13 +149,13 @@ public class Main {
 
             allEdges.addAll(List.of(
                     new Edge(new Corner(curr[0], curr[1]), new Corner(curr[0], curr[1] + 1),
-                            Direction.HORIZONTAL, Side.TOP),
+                            Side.TOP),
                     new Edge(new Corner(curr[0], curr[1] + 1), new Corner(curr[0] + 1, curr[1] + 1),
-                            Direction.VERTICAL, Side.RIGHT),
+                            Side.RIGHT),
                     new Edge(new Corner(curr[0] + 1, curr[1]), new Corner(curr[0] + 1, curr[1] + 1),
-                            Direction.HORIZONTAL, Side.BOTTOM),
+                            Side.BOTTOM),
                     new Edge(new Corner(curr[0], curr[1]), new Corner(curr[0] + 1, curr[1]),
-                            Direction.VERTICAL, Side.LEFT))
+                            Side.LEFT))
             );
 
             final List<int[]> neighbours = List.of(
@@ -185,26 +180,15 @@ public class Main {
     }
 
     private static List<Edge> mergeRows(final List<Edge> inputEdges) {
-        return mergeEdges(
-                inputEdges,
-                Direction.HORIZONTAL,
-                edge -> edge.from.x,
-                edge -> edge.from.y
-        );
+        return mergeEdges(inputEdges, edge -> edge.from.x, edge -> edge.from.y);
     }
 
     private static List<Edge> mergeCols(final List<Edge> inputEdges) {
-        return mergeEdges(
-                inputEdges,
-                Direction.VERTICAL,
-                edge -> edge.from.y,
-                edge -> edge.from.x
-        );
+        return mergeEdges(inputEdges, edge -> edge.from.y, edge -> edge.from.x);
     }
 
     private static List<Edge> mergeEdges(
             final List<Edge> inputEdges,
-            final Direction direction,
             final Function<Edge, Integer> primaryKeyExtractor,
             final Function<Edge, Integer> secondaryKeyExtractor) {
 
@@ -222,10 +206,10 @@ public class Main {
 
             if (lastEdge.to.equals(currentEdge.from) && lastEdge.side == currentEdge.side) {
                 results.removeLast();
-                results.add(new Edge(lastEdge.from, currentEdge.to, direction, lastEdge.side));
+                results.add(new Edge(lastEdge.from, currentEdge.to, lastEdge.side));
 
             } else {
-                results.add(new Edge(currentEdge.from, currentEdge.to, direction, currentEdge.side));
+                results.add(new Edge(currentEdge.from, currentEdge.to, currentEdge.side));
             }
         }
 
