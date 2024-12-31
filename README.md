@@ -19,7 +19,7 @@ Link - https://adventofcode.com/
 | 9   | 6200294120911     | 6227018762750                          |                                        |
 | 10  | 552               | 1225                                   |                                        |
 | 11  | 183620            | 220377651399268                        | #linked-list #brute-force #memoization |
-| 12  |                   |                                        |                                        |
+| 12  | 1464678           | 877492                                 | #graph #dfs #merge-intervals           |
 | 13  |                   |                                        |                                        |
 | 14  | 229839456         | 7137                                   |                                        |
 | 15  | 1495147           |                                        | #grid                                  |
