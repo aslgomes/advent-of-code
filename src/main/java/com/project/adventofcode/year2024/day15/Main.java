@@ -18,7 +18,7 @@ public class Main {
     // perform multiple swaps if there are boxes blocking the path.
     //
     // Part 2 - Similar to Part 1 with the added difficulty that now each box is represented by 2 cells []. In addition
-    // to this, multiple boxes adjacent to each other in triangles will be pushed together too.
+    // to this, multiple boxes adjacent to each other in triangles can be pushed together too.
 
     private static final String INPUT_FILE_PATH = "src/main/resources/year2024/day15/input.txt";
 
