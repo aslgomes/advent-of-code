@@ -2,10 +2,7 @@ package com.project.adventofcode.year2024.day15;
 
 import com.project.adventofcode.Common;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,8 +16,15 @@ public class Main {
     //
     // Part 1 - Basic grid manipulation. The key challenge is implementing the move() function which may need to
     // perform multiple swaps if there are boxes blocking the path.
+    //
+    // Part 2 - Similar to Part 1 with the added difficulty that now each box is represented by 2 cells []. In addition
+    // to this, multiple boxes adjacent to each other in triangles will be pushed together too.
 
     private static final String INPUT_FILE_PATH = "src/main/resources/year2024/day15/input.txt";
+
+    private static final String OUTPUT_FILE_PATH_PART_ONE = "src/main/resources/year2024/day15/output-part-one/";
+
+    private static final String OUTPUT_FILE_PATH_PART_TWO = "src/main/resources/year2024/day15/output-part-two/";
 
     private static final Map<Character, int[]> DIRECTIONS =
             Map.of(
@@ -30,13 +34,22 @@ public class Main {
                     'v', new int[] { 1, 0 }
             );
 
-    private static final Color DARK_GREEN = new Color(0, 100, 0);
+    private static final Map<Character, Color> COLOR_MAP =
+            Map.of(
+                    '@', Color.RED,
+                    'O', Color.BLUE,
+                    '[', Color.BLUE,
+                    ']', Color.BLUE,
+                    '#', new Color(0, 100, 0) // Dark Green
+            );
 
-    private static final boolean WITH_OUTPUT_PART_ONE = true;
+    private static final boolean WITH_OUTPUT_PART_ONE = false;
 
     private static final boolean WITH_OUTPUT_PART_TWO = false;
 
-    private record RobotPos(int x, int y) {}
+    private record Cell(int x, int y) { }
+
+    private record RowsAndMoves(int rows, List<String> moves) { }
 
     public static void main(String[] args) throws IOException {
         System.out.println("Hello Day 15");
@@ -56,10 +69,92 @@ public class Main {
 
     private static void partOne() throws IOException {
         final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
+
+        final RowsAndMoves rowsAndMoves = processInput(lines);
+        final List<String> moves = rowsAndMoves.moves();
+
+        int rows = rowsAndMoves.rows();
+        int cols = lines.getFirst().length();
+
+        char[][] grid = new char[rows][cols];
+        Cell robotPos = populateGrid(grid, lines);
+
+        int fileIterator = 1;
+        Common.outputImage(WITH_OUTPUT_PART_ONE, OUTPUT_FILE_PATH_PART_ONE, fileIterator++, grid, COLOR_MAP);
+
+        // Compute all moves
+        for (String move : moves) {
+            for (int i = 0; i < move.length(); i++) {
+                final char direction = move.charAt(i);
+                robotPos = movePartOne(direction, robotPos, grid);
+                Common.outputImage(WITH_OUTPUT_PART_ONE, OUTPUT_FILE_PATH_PART_ONE, fileIterator++, grid, COLOR_MAP);
+            }
+        }
+
+        System.out.println("total=" + computeResult(grid, 'O'));
+    }
+
+    private static void partTwo() throws IOException {
+        final List<String> lines = Files.readAllLines(Path.of(INPUT_FILE_PATH));
+
+        final RowsAndMoves rowsAndMoves = processInput(lines);
+        final List<String> moves = rowsAndMoves.moves();
+
+        int rows = rowsAndMoves.rows();
+        int cols = lines.getFirst().length();
+
+        char[][] grid = new char[rows][cols * 2];
+        Cell robotPos = new Cell(0, 0);
+
+        for (int i = 0; i < rows; i++) {
+            int p = 0;
+            for (int j = 0; j < lines.get(i).length(); j++) {
+                final char currentChar = lines.get(i).charAt(j);
+
+                if (currentChar == '.') {
+                    grid[i][p] = '.';
+                    grid[i][p + 1] = '.';
+                }
+
+                if (currentChar == '#') {
+                    grid[i][p] = '#';
+                    grid[i][p + 1] = '#';
+                }
+
+                if (currentChar == 'O') {
+                    grid[i][p] = '[';
+                    grid[i][p + 1] = ']';
+                }
+
+                if (currentChar == '@') {
+                    grid[i][p] = '@';
+                    grid[i][p + 1] = '.';
+                    robotPos = new Cell(i, p);
+                }
+
+                p = p + 2;
+            }
+        }
+
+        int fileIterator = 1;
+        Common.outputImage(WITH_OUTPUT_PART_TWO, OUTPUT_FILE_PATH_PART_TWO, fileIterator++, grid, COLOR_MAP);
+
+        // Compute all moves
+        for (String move : moves) {
+            for (int i = 0; i < move.length(); i++) {
+                final char direction = move.charAt(i);
+                robotPos = movePartTwo(direction, robotPos, grid);
+                Common.outputImage(WITH_OUTPUT_PART_TWO, OUTPUT_FILE_PATH_PART_TWO, fileIterator++, grid, COLOR_MAP);
+            }
+        }
+
+        System.out.println("total=" + computeResult(grid, '['));
+    }
+
+    private static RowsAndMoves processInput(final List<String> lines) {
         final List<String> moves = new ArrayList<>();
 
         int rows = 0;
-        int cols = lines.getFirst().length();
         boolean seenEmpty = false;
 
         // Process the input file
@@ -77,159 +172,160 @@ public class Main {
             }
         }
 
-        // Building the grid
-        RobotPos robotPos = new RobotPos(0,0);
-        char[][] grid = new char[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        return new RowsAndMoves(rows, moves);
+    }
+
+    private static Cell populateGrid(final char[][] grid, final List<String> lines) {
+        Cell robotPos = new Cell(0,0);
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
                 grid[i][j] = lines.get(i).charAt(j);
                 if (grid[i][j] == '@') {
-                    robotPos = new RobotPos(i, j);
+                    robotPos = new Cell(i, j);
                 }
             }
         }
 
-        int fileIterator = 1;
+        return robotPos;
+    }
 
-        // Compute all moves
-        for (String move : moves) {
-            for (int i = 0; i < move.length(); i++) {
-                final char direction = move.charAt(i);
-                robotPos = movePartOne(direction, robotPos, grid);
-
-                if (WITH_OUTPUT_PART_ONE) {
-                    final String fileName = String.format("output_%05d.png", fileIterator);
-                    final String directoryPath = "src/main/resources/year2024/day15/output-part-one/";
-                    final String fullPath = directoryPath + fileName;
-
-                    Files.createDirectories(Path.of(directoryPath));
-                    System.out.println("Printing " + fullPath);
-                    saveGridAsImage(grid, fullPath);
-                }
-
-                fileIterator++;
-            }
-        }
-
-        // Calculate the final result
+    private static long computeResult(final char[][] grid, final char c) {
         long total = 0;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] == 'O') {
+                if (grid[i][j] == c) {
                     total += (100L * i + j);
                 }
             }
         }
-
-        System.out.println("total=" + total);
+        return total;
     }
 
-    private static void partTwo() throws IOException {
-    }
+    private static Cell movePartOne(final char direction, final Cell robotPos, final char[][] grid) {
 
-    private static RobotPos movePartOne(final char direction, final RobotPos robotPos, final char[][] grid) {
-
-        // Compute new coordinates
         final int[] coordinates = DIRECTIONS.get(direction);
-        int currX = robotPos.x + coordinates[0];
-        int currY = robotPos.y + coordinates[1];
+        Cell current = new Cell(robotPos.x() + coordinates[0], robotPos.y() + coordinates[1]);
 
-        while (Common.withinBounds(grid, currX, currY) && grid[currX][currY] == 'O') {
-            currX = currX + coordinates[0];
-            currY = currY + coordinates[1];
+        while (Common.withinBounds(grid, current.x, current.y)
+                && (grid[current.x()][current.y()] == 'O'
+                        || grid[current.x()][current.y()] == '['
+                        || grid[current.x()][current.y()] == ']')) {
+
+            current = new Cell(current.x() + coordinates[0], current.y() + coordinates[1]);
         }
 
-        if (Common.withinBounds(grid, currX, currY) && grid[currX][currY] == '#') {
+        if (Common.withinBounds(grid, current.x, current.y) && grid[current.x()][current.y()] == '#') {
             return robotPos;
         }
 
-        if (Common.withinBounds(grid, currX, currY) && grid[currX][currY] == '.') {
+        if (Common.withinBounds(grid, current.x, current.y) && grid[current.x()][current.y()] == '.') {
 
             // while we are not at the coordinates where '@' is
-            while (currX != robotPos.x || currY != robotPos.y) {
+            while (current.x() != robotPos.x() || current.y() != robotPos.y()) {
 
                 // find previous
-                int prevX = currX - coordinates[0];
-                int prevY = currY - coordinates[1];
+                final Cell previous = new Cell(current.x() - coordinates[0], current.y() - coordinates[1]);
 
                 // swap current with previous
-                swap(grid, currX, currY, prevX, prevY);
+                swap(grid, current, previous);
 
                 // if the element that was just swapped is the robot, end the iteration
-                if (grid[currX][currY] == '@') {
-                    return new RobotPos(currX, currY);
+                if (grid[current.x()][current.y()] == '@') {
+                    return new Cell(current.x(), current.y());
                 }
 
                 // new current
-                currX = prevX;
-                currY = prevY;
+                current = new Cell(previous.x(), previous.y());
             }
         }
 
-        // this should not happen
-        return new RobotPos(-1, -1);
+        // this code should not be reached
+        return new Cell(-1, -1);
     }
 
-    private static void swap(final char[][] grid, int currX, int currY, int prevX, int prevY) {
-        char tmp = grid[currX][currY];
-        grid[currX][currY] = grid[prevX][prevY];
-        grid[prevX][prevY] = tmp;
-    }
+    private static Cell movePartTwo(final char direction, final Cell robotPos, final char[][] grid) {
 
-    // Method to save the grid as a PNG
-    private static void saveGridAsImage(final char[][] grid, final String outputFileName) throws IOException {
-        // Calculate dimensions
-        final int cellSize = 20; // Size of each cell in pixels
-        final int padding = 10;  // Padding around the grid
-        final int width = grid[0].length * cellSize + padding * 2;
-        final int height = grid.length * cellSize + padding * 2;
-
-        // Create an image
-        final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        final Graphics2D g2d = image.createGraphics();
-
-        // Set background color
-        g2d.setColor(Color.WHITE);
-        g2d.fillRect(0, 0, width, height);
-
-        // Set text color and font
-        g2d.setFont(new Font("Monospaced", Font.PLAIN, 16));
-
-        // Draw the grid
-        final FontMetrics metrics = g2d.getFontMetrics();
-        int cellY = padding + metrics.getAscent();
-
-        for (char[] row : grid) {
-            int cellX = padding;
-            for (char c : row) {
-
-                // Set specific colors for different characters
-                if (c == '@') {
-                    g2d.setColor(Color.RED);
-
-                } else if (c == 'O') {
-                    g2d.setColor(Color.BLUE);
-
-                } else if (c == '#') {
-                    g2d.setColor(DARK_GREEN);
-
-                } else {
-                    g2d.setColor(Color.BLACK);
-                }
-
-                // Draw the character
-                g2d.drawString(String.valueOf(c), cellX, cellY);
-
-                // Move to the next cell
-                cellX += cellSize;
-            }
-            cellY += cellSize; // Move to the next row
+        if (direction == '>' || direction == '<') {
+            return movePartOne(direction, robotPos, grid);
         }
 
-        // Release resources
-        g2d.dispose();
+        if (canMoveFrom(direction, robotPos, grid)) {
+            swapFrom(direction, robotPos, grid);
 
-        // Write the image to file
-        ImageIO.write(image, "png", new File(outputFileName));
+        } else {
+            return robotPos;
+        }
+
+        final int[] coordinates = DIRECTIONS.get(direction);
+        return new Cell(robotPos.x() + coordinates[0], robotPos.y() + coordinates[1]);
+    }
+
+    private static boolean canMoveFrom(final char direction, final Cell current, final char[][] grid) {
+        final int[] coordinates = DIRECTIONS.get(direction);
+        final Cell next = new Cell(current.x() + coordinates[0], current.y() + coordinates[1]);
+
+        if (grid[current.x][current.y] == '@')  {
+            return canMoveFrom(direction, next, grid);
+        }
+
+        if (grid[current.x][current.y] == '.')  {
+            return true;
+        }
+
+        if (grid[current.x][current.y] == '#')  {
+            return false;
+        }
+
+        if (grid[current.x][current.y] == '[')  {
+            final Cell nextNeighbour = new Cell(next.x, next.y + 1);
+            return canMoveFrom(direction, next, grid) && canMoveFrom(direction, nextNeighbour, grid);
+        }
+
+        if (grid[current.x][current.y] == ']')  {
+            final Cell nextNeighbour = new Cell(next.x, next.y - 1);
+            return canMoveFrom(direction, next, grid) && canMoveFrom(direction, nextNeighbour, grid);
+        }
+
+        return false;
+    }
+
+    private static void swapFrom(final char direction, final Cell current, final char[][] grid) {
+        final int[] coordinates = DIRECTIONS.get(direction);
+        final Cell next = new Cell(current.x() + coordinates[0], current.y() + coordinates[1]);
+
+        if (grid[current.x][current.y] == '@')  {
+            swapFrom(direction, next, grid);
+            swap(grid, current, next);
+            return;
+        }
+
+        if (grid[current.x][current.y] == '.') {
+            return;
+        }
+
+        if (grid[current.x][current.y] == ']') {
+            final Cell otherNext = new Cell(next.x, next.y - 1);
+            swapFrom(direction, next, grid);
+            swapFrom(direction, otherNext, grid);
+
+            swap(grid, current, next);
+            swap(grid, new Cell(current.x, current.y - 1), otherNext);
+            return;
+        }
+
+        if (grid[current.x][current.y] == '[') {
+            final Cell otherNext = new Cell(next.x, next.y + 1);
+            swapFrom(direction, next, grid);
+            swapFrom(direction, otherNext, grid);
+
+            swap(grid, current, next);
+            swap(grid, new Cell(current.x, current.y + 1), otherNext);
+        }
+    }
+
+    private static void swap(final char[][] grid, final Cell a, final Cell b) {
+        char tmp = grid[a.x][a.y];
+        grid[a.x][a.y] = grid[b.x][b.y];
+        grid[b.x][b.y] = tmp;
     }
 }

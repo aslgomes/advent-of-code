@@ -22,7 +22,7 @@ Link - https://adventofcode.com/
 | 12  | 1464678           | 877492                                 | #graph #dfs #merge-intervals           |
 | 13  |                   |                                        |                                        |
 | 14  | 229839456         | 7137                                   |                                        |
-| 15  | 1495147           |                                        | #grid                                  |
+| 15  | 1495147           | 1524905                                | #grid #moves #swaps                    |
 | 16  | 104516            | 545                                    | #graph #dijkstra                       |
 | 17  | 3,1,4,3,1,7,1,6,3 |                                        |                                        |
 | 18  | 306               | 38,63                                  | #graph #bfs                            |
@@ -31,10 +31,5 @@ Link - https://adventofcode.com/
 | 21  |                   |                                        |                                        |
 | 22  | 20506453102       | 2423                                   | #math #sliding-window                  |
 | 23  | 1423              | gt,ha,ir,jn,jq,kb,lr,lt,nl,oj,pp,qh,vy | #graph #subsets                        |
-
-## Visualizations
-
-### 2024 - Day 15 Part 1
-
-* [Download short video \[60s\] \[15fps\] \[mp4\]](assets/videos/2024_day15_01_animation-short-15fps.mp4)
-* [Download full video \[11m\] \[30fps\] \[mp4\]](assets/videos/2024_day15_01_animation-full-30fps.mp4)
+| 24  |                   |                                        |                                        |
+| 25  |                   |                                        |                                        |
