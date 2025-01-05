@@ -2,7 +2,7 @@ package com.project.adventofcode.year2024.day15;
 
 import com.project.adventofcode.Common;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,7 +28,7 @@ public class Main {
 
     private static final Map<Character, int[]> DIRECTIONS =
             Map.of(
-                    '>', new int[] { 0 , 1 },
+                    '>', new int[] { 0, 1 },
                     '<', new int[] { 0, -1 },
                     '^', new int[] { -1, 0 },
                     'v', new int[] { 1, 0 }
@@ -176,7 +176,7 @@ public class Main {
     }
 
     private static Cell populateGrid(final char[][] grid, final List<String> lines) {
-        Cell robotPos = new Cell(0,0);
+        Cell robotPos = new Cell(0, 0);
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
                 grid[i][j] = lines.get(i).charAt(j);
@@ -251,76 +251,65 @@ public class Main {
 
         if (canMoveFrom(direction, robotPos, grid)) {
             swapFrom(direction, robotPos, grid);
-
-        } else {
-            return robotPos;
+            return getNextCell(direction, robotPos);
         }
 
-        final int[] coordinates = DIRECTIONS.get(direction);
-        return new Cell(robotPos.x() + coordinates[0], robotPos.y() + coordinates[1]);
+        return robotPos;
     }
 
     private static boolean canMoveFrom(final char direction, final Cell current, final char[][] grid) {
-        final int[] coordinates = DIRECTIONS.get(direction);
-        final Cell next = new Cell(current.x() + coordinates[0], current.y() + coordinates[1]);
+        final Cell next = getNextCell(direction, current);
+        final Cell nextNeighbour;
 
-        if (grid[current.x][current.y] == '@')  {
-            return canMoveFrom(direction, next, grid);
-        }
-
-        if (grid[current.x][current.y] == '.')  {
-            return true;
-        }
-
-        if (grid[current.x][current.y] == '#')  {
-            return false;
-        }
-
-        if (grid[current.x][current.y] == '[')  {
-            final Cell nextNeighbour = new Cell(next.x, next.y + 1);
-            return canMoveFrom(direction, next, grid) && canMoveFrom(direction, nextNeighbour, grid);
-        }
-
-        if (grid[current.x][current.y] == ']')  {
-            final Cell nextNeighbour = new Cell(next.x, next.y - 1);
-            return canMoveFrom(direction, next, grid) && canMoveFrom(direction, nextNeighbour, grid);
-        }
-
-        return false;
+        return switch (grid[current.x()][current.y()]) {
+            case '@' -> canMoveFrom(direction, next, grid);
+            case '.' -> true;
+            case '[' -> {
+                nextNeighbour = new Cell(next.x(), next.y() + 1);
+                yield canMoveFrom(direction, next, grid) && canMoveFrom(direction, nextNeighbour, grid);
+            }
+            case ']' -> {
+                nextNeighbour = new Cell(next.x(), next.y() - 1);
+                yield canMoveFrom(direction, next, grid) && canMoveFrom(direction, nextNeighbour, grid);
+            }
+            default -> false;
+        };
     }
 
     private static void swapFrom(final char direction, final Cell current, final char[][] grid) {
+        final Cell next = getNextCell(direction, current);
+        final Cell nextNeighbour;
+
+        switch (grid[current.x()][current.y()]) {
+            case '@':
+                swapFrom(direction, next, grid);
+                swap(grid, current, next);
+                break;
+
+            case '.':
+                break;
+
+            case '[':
+                nextNeighbour = new Cell(next.x(), next.y() + 1);
+                swapFrom(direction, next, grid);
+                swapFrom(direction, nextNeighbour, grid);
+                swap(grid, current, next);
+                swap(grid, new Cell(current.x(), current.y() + 1), nextNeighbour);
+                break;
+
+            case ']':
+                nextNeighbour = new Cell(next.x(), next.y() - 1);
+                swapFrom(direction, next, grid);
+                swapFrom(direction, nextNeighbour, grid);
+                swap(grid, current, next);
+                swap(grid, new Cell(current.x(), current.y() - 1), nextNeighbour);
+                break;
+        }
+    }
+
+    private static Cell getNextCell(final char direction, final Cell current) {
         final int[] coordinates = DIRECTIONS.get(direction);
-        final Cell next = new Cell(current.x() + coordinates[0], current.y() + coordinates[1]);
-
-        if (grid[current.x][current.y] == '@')  {
-            swapFrom(direction, next, grid);
-            swap(grid, current, next);
-            return;
-        }
-
-        if (grid[current.x][current.y] == '.') {
-            return;
-        }
-
-        if (grid[current.x][current.y] == ']') {
-            final Cell otherNext = new Cell(next.x, next.y - 1);
-            swapFrom(direction, next, grid);
-            swapFrom(direction, otherNext, grid);
-
-            swap(grid, current, next);
-            swap(grid, new Cell(current.x, current.y - 1), otherNext);
-            return;
-        }
-
-        if (grid[current.x][current.y] == '[') {
-            final Cell otherNext = new Cell(next.x, next.y + 1);
-            swapFrom(direction, next, grid);
-            swapFrom(direction, otherNext, grid);
-
-            swap(grid, current, next);
-            swap(grid, new Cell(current.x, current.y + 1), otherNext);
-        }
+        return new Cell(current.x() + coordinates[0], current.y() + coordinates[1]);
     }
 
     private static void swap(final char[][] grid, final Cell a, final Cell b) {
