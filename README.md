@@ -26,8 +26,8 @@ Link - https://adventofcode.com/
 | 16  | 104516            | 545                                    | #graph #dijkstra                         |
 | 17  | 3,1,4,3,1,7,1,6,3 |                                        |                                          |
 | 18  | 306               | 38,63                                  | #graph #bfs                              |
-| 19  | 206               | 622121814629343                        |                                          |
-| 20  |                   |                                        |                                          | 
+| 19  | 206               | 622121814629343                        | #graph #bfs                              |
+| 20  | 1365              |                                        |                                          | 
 | 21  |                   |                                        |                                          |
 | 22  | 20506453102       | 2423                                   | #math #sliding-window                    |
 | 23  | 1423              | gt,ha,ir,jn,jq,kb,lr,lt,nl,oj,pp,qh,vy | #graph #subsets                          |
